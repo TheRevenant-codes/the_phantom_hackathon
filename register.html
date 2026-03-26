@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARASITE — Create Account</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.auth-wrap { min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative; }
+.auth-bg { position:absolute;inset:0;background:radial-gradient(ellipse at 40% 60%,rgba(233,69,96,.06) 0%,transparent 60%);pointer-events:none; }
+.auth-card { background:var(--card);border:1px solid var(--border);width:100%;max-width:440px;padding:2.5rem;position:relative;z-index:1; }
+.auth-logo { font-family:'Bebas Neue';font-size:2rem;letter-spacing:.1em;margin-bottom:.25rem; }
+.auth-logo span { color:var(--accent); }
+.auth-sub { font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2rem; }
+.auth-title { font-family:'Bebas Neue';font-size:2.5rem;color:var(--white);margin-bottom:.3rem; }
+.auth-desc { font-size:.85rem;color:var(--muted);margin-bottom:2rem;line-height:1.6; }
+.auth-field { margin-bottom:1.2rem; }
+.auth-label { font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.4rem; }
+.auth-input { width:100%;background:var(--card2);border:1px solid var(--border);color:var(--white);padding:.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s; }
+.auth-input:focus { border-color:var(--accent); }
+.auth-btn { width:100%;background:var(--accent);color:#fff;border:none;padding:.9rem;font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:background .2s;margin-top:.5rem; }
+.auth-btn:hover { background:#ff2040; }
+.auth-btn:disabled { background:var(--muted);cursor:not-allowed; }
+.auth-switch { text-align:center;margin-top:1.5rem;font-size:.82rem;color:var(--muted); }
+.auth-switch a { color:var(--accent);text-decoration:none; }
+.auth-msg { margin-top:1rem;font-family:'Space Mono',monospace;font-size:.65rem;padding:.7rem;text-align:center;display:none; }
+.auth-msg.success { background:rgba(0,200,150,.1);border:1px solid var(--green);color:var(--green); }
+.auth-msg.error   { background:rgba(233,69,96,.1);border:1px solid var(--accent);color:var(--accent); }
+.terms { font-size:.75rem;color:var(--muted);margin-top:1rem;text-align:center;line-height:1.5; }
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="curR"></div>
+
+<nav>
+  <div class="nav-logo">PARA<span>SITE</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+  </div>
+  <a href="login.html" class="nav-cta" style="text-decoration:none">Login</a>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-bg"></div>
+  <div class="auth-card">
+    <div class="auth-logo">PARA<span>SITE</span></div>
+    <div class="auth-sub">// AI Financial Recovery</div>
+    <div class="auth-title">START HUNTING</div>
+    <div class="auth-desc">Create your account. Connect your bank. PARASITE immediately starts hunting overcharges, dead subscriptions, and cashback. Zero upfront cost.</div>
+
+    <div class="auth-field">
+      <label class="auth-label">Full Name</label>
+      <input class="auth-input" type="text" id="name" placeholder="REVENANT">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Email Address</label>
+      <input class="auth-input" type="email" id="email" placeholder="you@example.com">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Phone Number</label>
+      <input class="auth-input" type="tel" id="phone" placeholder="+234 xxx xxx xxxx">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Password</label>
+      <input class="auth-input" type="password" id="password" placeholder="Min. 6 characters">
+    </div>
+
+    <button class="auth-btn" id="regBtn" onclick="doRegister()">Create Account — Free</button>
+    <div class="auth-msg" id="authMsg"></div>
+    <div class="terms">By creating an account you agree to read-only access to your transaction data. We never move or hold your money.</div>
+
+    <div class="auth-switch">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px';});
+(function anim(){rx+=(mx-rx-16)*.1;ry+=(my-ry-16)*.1;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(anim);})();
+
+if (isLoggedIn()) window.location.href = 'dashboard.html';
+
+async function doRegister() {
+    var name     = document.getElementById('name').value.trim();
+    var email    = document.getElementById('email').value.trim();
+    var phone    = document.getElementById('phone').value.trim();
+    var password = document.getElementById('password').value.trim();
+    var btn      = document.getElementById('regBtn');
+
+    if (!name || !email || !password) { showMsg('Name, email and password are required', 'error'); return; }
+    if (password.length < 6)          { showMsg('Password must be at least 6 characters', 'error'); return; }
+
+    btn.disabled    = true;
+    btn.textContent = 'Creating account...';
+
+    var result = await api('register', 'POST', { name, email, phone, password });
+
+    if (result.success) {
+        setAuth(result.token, { name: result.name, email: result.email, user_id: result.user_id });
+        showMsg('Account created! Redirecting to connect your bank...', 'success');
+        setTimeout(function() { window.location.href = 'connect.html'; }, 1000);
+    } else {
+        showMsg(result.error || 'Registration failed', 'error');
+        btn.disabled    = false;
+        btn.textContent = 'Create Account — Free';
+    }
+}
+
+function showMsg(text, type) {
+    var msg = document.getElementById('authMsg');
+    msg.textContent   = text;
+    msg.className     = 'auth-msg ' + type;
+    msg.style.display = 'block';
+}
+</script>
+</body>
+</html>

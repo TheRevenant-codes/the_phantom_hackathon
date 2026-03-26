@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARASITE — Connect Your Bank</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.connect-wrap { min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative; }
+.connect-bg { position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(233,69,96,.07) 0%,transparent 65%);pointer-events:none; }
+.connect-card { background:var(--card);border:1px solid var(--border);width:100%;max-width:520px;padding:3rem;position:relative;z-index:1;text-align:center; }
+.connect-logo { font-family:'Bebas Neue';font-size:1.8rem;letter-spacing:.1em;margin-bottom:2rem; }
+.connect-logo span { color:var(--accent); }
+.connect-title { font-family:'Bebas Neue';font-size:3rem;line-height:.95;margin-bottom:1rem; }
+.connect-title span { color:var(--accent); }
+.connect-desc { font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:2.5rem;max-width:360px;margin-left:auto;margin-right:auto; }
+.connect-btn { background:var(--accent);color:#fff;border:none;padding:1rem 2.5rem;font-family:'Space Mono',monospace;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;clip-path:polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%);transition:background .2s;display:inline-block; }
+.connect-btn:hover { background:#ff2040; }
+.connect-btn:disabled { background:var(--muted);cursor:not-allowed; }
+.connect-status { margin-top:1.5rem;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--green);line-height:2;white-space:pre-line;min-height:2rem; }
+.connect-status.error { color:var(--accent); }
+.connect-security { display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border); }
+.sec-item { font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);display:flex;align-items:center;gap:.4rem; }
+.sec-item::before { content:'✓';color:var(--green); }
+.connect-skip { margin-top:1.2rem;font-size:.8rem;color:var(--muted); }
+.connect-skip a { color:var(--accent);text-decoration:none; }
+.progress-steps { display:flex;flex-direction:column;gap:0;margin:2rem 0;text-align:left; }
+.prog-step { display:flex;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--border); }
+.prog-step:last-child { border-bottom:none; }
+.prog-circle { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;flex-shrink:0;transition:all .4s; }
+.prog-circle.waiting { background:var(--card2);border:1px solid var(--border);color:var(--muted); }
+.prog-circle.active  { background:rgba(245,166,35,.2);border:1px solid var(--gold);color:var(--gold);animation:pulse 1s infinite; }
+.prog-circle.done    { background:rgba(0,200,150,.2);border:1px solid var(--green);color:var(--green); }
+.prog-circle.fail    { background:rgba(233,69,96,.2);border:1px solid var(--accent);color:var(--accent); }
+.prog-label { font-size:.82rem;color:var(--white); }
+.prog-sub   { font-size:.72rem;color:var(--muted); }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="curR"></div>
+
+<nav>
+  <div class="nav-logo">PARA<span>SITE</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+  <button class="nav-cta" id="navUser">My Account</button>
+</nav>
+
+<div class="connect-wrap">
+  <div class="connect-bg"></div>
+  <div class="connect-card">
+    <div class="connect-logo">PARA<span>SITE</span></div>
+
+    <div id="preConnect">
+      <div class="connect-title">CONNECT YOUR<br><span>BANK ACCOUNT</span></div>
+      <div class="connect-desc">PARASITE needs read-only access to your transactions. We use Mono — Nigeria's most trusted Open Banking provider. We never move your money.</div>
+      <button class="connect-btn" id="connectBtn" onclick="connectBank()">Connect UBA Account</button>
+      <div class="connect-security">
+        <div class="sec-item">Read-only access</div>
+        <div class="sec-item">Bank-grade encryption</div>
+        <div class="sec-item">We never move money</div>
+      </div>
+      <div class="connect-skip">Already connected? <a href="dashboard.html">Go to Dashboard</a></div>
+    </div>
+
+    <div id="inProgress" style="display:none">
+      <div class="connect-title" style="font-size:2rem;margin-bottom:1.5rem">HUNTING<br><span>IN PROGRESS</span></div>
+      <div class="progress-steps">
+        <div class="prog-step"><div class="prog-circle waiting" id="ps1">1</div><div><div class="prog-label">Bank Authentication</div><div class="prog-sub">Verifying your UBA credentials via Mono</div></div></div>
+        <div class="prog-step"><div class="prog-circle waiting" id="ps2">2</div><div><div class="prog-label">Account Linking</div><div class="prog-sub">Saving your account to PARASITE</div></div></div>
+        <div class="prog-step"><div class="prog-circle waiting" id="ps3">3</div><div><div class="prog-label">Fetching Transactions</div><div class="prog-sub">Pulling last 3 months from UBA</div></div></div>
+        <div class="prog-step"><div class="prog-circle waiting" id="ps4">4</div><div><div class="prog-label">Scanning for Overcharges</div><div class="prog-sub">Checking every transaction for suspicious fees</div></div></div>
+        <div class="prog-step"><div class="prog-circle waiting" id="ps5">5</div><div><div class="prog-label">Detecting Subscriptions</div><div class="prog-sub">Finding recurring charges you may have forgotten</div></div></div>
+        <div class="prog-step"><div class="prog-circle waiting" id="ps6">6</div><div><div class="prog-label">Filing Claims</div><div class="prog-sub">Auto-filing disputes and cashback claims</div></div></div>
+      </div>
+      <div class="connect-status" id="connectStatus">Initialising...</div>
+    </div>
+
+    <div id="donePanel" style="display:none;text-align:center">
+      <div class="connect-title" style="font-size:2.5rem;color:var(--green)">HUNT<br>COMPLETE</div>
+      <div class="connect-desc" id="doneDesc">PARASITE has scanned your transactions.</div>
+      <a href="dashboard.html" class="connect-btn" style="text-decoration:none;display:inline-block;margin-top:1rem">View My Dashboard →</a>
+    </div>
+  </div>
+</div>
+
+<script src="https://connect.withmono.com/connect.js"></script>
+<script src="shared.js"></script>
+<script>
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px';});
+(function anim(){rx+=(mx-rx-16)*.1;ry+=(my-ry-16)*.1;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(anim);})();
+
+// Set nav user name
+var user = getUser();
+if (user) document.getElementById('navUser').textContent = user.name;
+document.getElementById('navUser').onclick = function() { window.location.href = 'dashboard.html'; };
+
+var MONO_PUBLIC_KEY = 'test_pk_ktz887xu36h3sz260gpd';
+
+function setStep(n, state) {
+    var el = document.getElementById('ps' + n);
+    if (el) el.className = 'prog-circle ' + state;
+}
+function setStatus(msg, isError) {
+    var el = document.getElementById('connectStatus');
+    if (el) { el.textContent = msg; el.className = isError ? 'connect-status error' : 'connect-status'; }
+}
+
+async function connectBank() {
+    if (!requireAuth()) return;
+
+    var user = getUser();
+    document.getElementById('preConnect').style.display = 'none';
+    document.getElementById('inProgress').style.display = 'block';
+    setStep(1, 'active');
+    setStatus('Opening Mono widget...');
+
+    var config = {
+        key: MONO_PUBLIC_KEY,
+        data: {
+            customer: {
+                name:  user ? user.name  : 'PARASITE User',
+                email: user ? user.email : 'user@parasite.com'
+            }
+        },
+        onSuccess: async function(data) {
+            setStep(1, 'done');
+            setStep(2, 'active');
+            setStatus('Bank authenticated. Linking account...');
+
+            // Link account
+            var linkResult = await api('link-account', 'POST', { code: data.code });
+
+            if (!linkResult.success) {
+                setStep(2, 'fail');
+                setStatus('Failed to link account: ' + (linkResult.error || 'Unknown error'), true);
+                return;
+            }
+
+            setStep(2, 'done');
+            setStep(3, 'active');
+            setStatus('Fetching your transactions from UBA...');
+
+            // Sync + scan
+            var syncResult = await api('sync', 'POST', {});
+
+            if (!syncResult.success) {
+                setStep(3, 'fail');
+                setStatus('Sync failed: ' + (syncResult.error || 'Unknown error'), true);
+                return;
+            }
+
+            setStep(3, 'done');
+            setStep(4, 'active');
+            setStatus('Scanning ' + syncResult.transactions_fetched + ' transactions for overcharges...');
+            await new Promise(r => setTimeout(r, 800));
+            setStep(4, 'done');
+
+            setStep(5, 'active');
+            setStatus('Detecting subscriptions...');
+            await new Promise(r => setTimeout(r, 600));
+            setStep(5, 'done');
+
+            setStep(6, 'active');
+            setStatus('Filing claims...');
+            await new Promise(r => setTimeout(r, 600));
+            setStep(6, 'done');
+
+            // Show done panel
+            var sr = syncResult.scan_results;
+            document.getElementById('inProgress').style.display = 'none';
+            document.getElementById('donePanel').style.display  = 'block';
+            document.getElementById('doneDesc').textContent =
+                'Scanned ' + syncResult.transactions_fetched + ' transactions. Found ' +
+                sr.subscriptions_found + ' subscriptions, ' +
+                sr.overcharges_found + ' overcharges, ' +
+                sr.cashback_found + ' cashback opportunities.';
+        },
+        onClose: function() {
+            document.getElementById('preConnect').style.display = 'block';
+            document.getElementById('inProgress').style.display = 'none';
+            setStep(1, 'waiting');
+        }
+    };
+
+    var connect = new Connect(config);
+    connect.setup();
+    connect.open();
+}
+</script>
+</body>
+</html>

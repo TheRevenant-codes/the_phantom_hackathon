@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARASITE — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.dash-wrap { padding:5rem 2.5rem 3rem; }
+.dash-header { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem; }
+.dash-greeting { font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem; }
+.dash-title { font-family:'Bebas Neue';font-size:3rem;line-height:.95; }
+.dash-title span { color:var(--accent); }
+.dash-sync-btn { background:var(--card2);border:1px solid var(--border);color:var(--muted);padding:.6rem 1.2rem;font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s; }
+.dash-sync-btn:hover { border-color:var(--accent);color:var(--accent); }
+
+/* Stat cards row */
+.dash-stats { display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem; }
+.dash-stat { background:var(--card);border:1px solid var(--border);padding:1.5rem;position:relative;overflow:hidden; }
+.dash-stat::after { content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--c,var(--accent)); }
+.ds-label { font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem; }
+.ds-val   { font-family:'Bebas Neue';font-size:2.2rem;color:var(--c,var(--accent));line-height:1; }
+.ds-sub   { font-size:.72rem;color:var(--muted);margin-top:.3rem; }
+
+/* Tabs */
+.db-nav { display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:2rem; }
+.db-nav-item { font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);padding:.75rem 1.5rem;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;text-transform:uppercase;letter-spacing:.08em; }
+.db-nav-item.active { color:var(--accent);border-bottom-color:var(--accent); }
+.db-nav-item:hover { color:var(--white); }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* Transactions table */
+.table-wrap { background:var(--card);border:1px solid var(--border);overflow:hidden; }
+.table-head { background:var(--card2);padding:.75rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border); }
+.table-title { font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em; }
+.table-live { display:flex;align-items:center;gap:.4rem;font-family:'Space Mono',monospace;font-size:.58rem;color:var(--green); }
+.table-live-dot { width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite; }
+table { width:100%;border-collapse:collapse; }
+th { font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding:.6rem 1.5rem;text-align:left;border-bottom:1px solid var(--border);background:rgba(0,0,0,.2); }
+td { font-size:.8rem;padding:.7rem 1.5rem;border-bottom:1px solid var(--border); }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:var(--card2); }
+.badge { font-family:'Space Mono',monospace;font-size:.55rem;padding:.15rem .5rem;font-weight:700; }
+.badge-green  { background:rgba(0,200,150,.15);color:var(--green);border:1px solid rgba(0,200,150,.3); }
+.badge-red    { background:rgba(233,69,96,.15);color:var(--accent);border:1px solid rgba(233,69,96,.3); }
+.badge-gold   { background:rgba(245,166,35,.15);color:var(--gold);border:1px solid rgba(245,166,35,.3); }
+.badge-blue   { background:rgba(74,144,217,.15);color:var(--blue);border:1px solid rgba(74,144,217,.3); }
+
+/* Subscription cards */
+.sub-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1rem; }
+.sub-card { background:var(--card);border:1px solid var(--border);padding:1.5rem;position:relative;overflow:hidden; }
+.sub-card::before { content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent); }
+.sub-merchant { font-family:'Bebas Neue';font-size:1.4rem;margin-bottom:.3rem; }
+.sub-amount   { font-size:1.2rem;font-weight:600;color:var(--accent); }
+.sub-freq     { font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.2rem; }
+.sub-renewal  { font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);margin-top:.5rem; }
+
+/* Empty state */
+.empty-state { text-align:center;padding:4rem 2rem; }
+.empty-title { font-family:'Bebas Neue';font-size:2rem;color:var(--muted);margin-bottom:.5rem; }
+.empty-desc  { font-size:.85rem;color:var(--muted);margin-bottom:1.5rem; }
+.empty-btn   { background:var(--accent);color:#fff;border:none;padding:.75rem 1.5rem;font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);text-decoration:none;display:inline-block; }
+
+/* Loading spinner */
+.spinner { display:flex;align-items:center;justify-content:center;padding:3rem;color:var(--muted);font-family:'Space Mono',monospace;font-size:.7rem;gap:.8rem; }
+.spin { width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:.4} }
+
+/* Swarm */
+.swarm-list { display:flex;flex-direction:column;gap:1rem; }
+.swarm-row { background:var(--card);border:1px solid var(--border);padding:1.2rem 1.5rem; }
+.swarm-row-top { display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem; }
+.swarm-row-name { font-weight:600; }
+.swarm-row-users { font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted); }
+.swarm-bar { height:4px;background:var(--border);margin-bottom:.6rem; }
+.swarm-fill { height:100%;background:var(--accent); }
+.swarm-row-meta { display:flex;justify-content:space-between; }
+.swarm-row-amt { font-family:'Bebas Neue';font-size:1.2rem;color:var(--accent); }
+
+/* Accounts panel */
+.accounts-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin-bottom:2rem; }
+.account-card { background:var(--card);border:1px solid var(--border);padding:1.5rem; }
+.ac-bank { font-family:'Bebas Neue';font-size:1.5rem;margin-bottom:.3rem; }
+.ac-num  { font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);margin-bottom:.8rem; }
+.ac-bal  { font-size:1.4rem;font-weight:600;color:var(--green); }
+.ac-sync { font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);margin-top:.3rem; }
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="curR"></div>
+
+<nav>
+  <div class="nav-logo">PARA<span>SITE</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html" style="color:var(--accent)">Dashboard</a>
+    <a href="#" onclick="doLogout()">Logout</a>
+  </div>
+  <button class="nav-cta" id="navUser">Loading...</button>
+</nav>
+
+<div class="dash-wrap">
+  <!-- Header -->
+  <div class="dash-header">
+    <div>
+      <div class="dash-greeting">// Recovery Dashboard</div>
+      <div class="dash-title">HUNTING FOR<br><span id="userName">YOUR</span> MONEY</div>
+    </div>
+    <div style="display:flex;gap:.8rem;align-items:center">
+      <button class="dash-sync-btn" onclick="syncNow()" id="syncBtn">⟳ Sync Now</button>
+      <a href="connect.html" class="dash-sync-btn" style="text-decoration:none">+ Add Account</a>
+    </div>
+  </div>
+
+  <!-- Top stat cards -->
+  <div class="dash-stats">
+    <div class="dash-stat" style="--c:var(--green)">
+      <div class="ds-label">Total Recoverable</div>
+      <div class="ds-val" id="statTotal">₦0</div>
+      <div class="ds-sub">Disputes + cashback pending</div>
+    </div>
+    <div class="dash-stat" style="--c:var(--accent)">
+      <div class="ds-label">Overcharges Found</div>
+      <div class="ds-val" id="statDisputes">0</div>
+      <div class="ds-sub" id="statDisputesAmt">₦0 being disputed</div>
+    </div>
+    <div class="dash-stat" style="--c:var(--gold)">
+      <div class="ds-label">Subscriptions</div>
+      <div class="ds-val" id="statSubs">0</div>
+      <div class="ds-sub" id="statSubsAmt">₦0/month</div>
+    </div>
+    <div class="dash-stat" style="--c:var(--blue)">
+      <div class="ds-label">Cashback Pending</div>
+      <div class="ds-val" id="statCashback">0</div>
+      <div class="ds-sub" id="statCashbackAmt">₦0 pending</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="db-nav">
+    <div class="db-nav-item active" onclick="switchTab('overview',this)">Overview</div>
+    <div class="db-nav-item" onclick="switchTab('transactions',this)">Transactions</div>
+    <div class="db-nav-item" onclick="switchTab('subscriptions',this)">Subscriptions</div>
+    <div class="db-nav-item" onclick="switchTab('disputes',this)">Disputes</div>
+    <div class="db-nav-item" onclick="switchTab('swarms',this)">Swarms</div>
+    <div class="db-nav-item" onclick="switchTab('accounts',this)">Accounts</div>
+  </div>
+
+  <!-- Overview Tab -->
+  <div class="tab-panel active" id="tab-overview">
+    <div id="overviewContent"><div class="spinner"><div class="spin"></div> Loading...</div></div>
+  </div>
+
+  <!-- Transactions Tab -->
+  <div class="tab-panel" id="tab-transactions">
+    <div class="table-wrap">
+      <div class="table-head">
+        <div class="table-title">All Transactions</div>
+        <div style="display:flex;gap:.8rem">
+          <button onclick="loadTransactions(1,true)" style="background:none;border:1px solid var(--accent);color:var(--accent);padding:.3rem .8rem;font-family:'Space Mono',monospace;font-size:.58rem;cursor:pointer;text-transform:uppercase">Flagged Only</button>
+          <button onclick="loadTransactions(1,false)" style="background:none;border:1px solid var(--border);color:var(--muted);padding:.3rem .8rem;font-family:'Space Mono',monospace;font-size:.58rem;cursor:pointer;text-transform:uppercase">All</button>
+        </div>
+      </div>
+      <div id="txnTableWrap"><div class="spinner"><div class="spin"></div> Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- Subscriptions Tab -->
+  <div class="tab-panel" id="tab-subscriptions">
+    <div id="subsContent"><div class="spinner"><div class="spin"></div> Loading...</div></div>
+  </div>
+
+  <!-- Disputes Tab -->
+  <div class="tab-panel" id="tab-disputes">
+    <div class="table-wrap">
+      <div class="table-head"><div class="table-title">Filed Disputes</div></div>
+      <div id="disputesContent"><div class="spinner"><div class="spin"></div> Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- Swarms Tab -->
+  <div class="tab-panel" id="tab-swarms">
+    <div id="swarmsContent"><div class="spinner"><div class="spin"></div> Loading...</div></div>
+  </div>
+
+  <!-- Accounts Tab -->
+  <div class="tab-panel" id="tab-accounts">
+    <div id="accountsContent"><div class="spinner"><div class="spin"></div> Loading...</div></div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Cursor
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px';});
+(function anim(){rx+=(mx-rx-16)*.1;ry+=(my-ry-16)*.1;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(anim);})();
+
+if (!requireAuth()) { /* redirected */ }
+
+var user = getUser();
+if (user) {
+    document.getElementById('navUser').textContent  = user.name;
+    document.getElementById('userName').textContent = user.name.split(' ')[0] + "'S";
+}
+
+// ── Load dashboard on page open ──
+loadDashboard();
+
+async function loadDashboard() {
+    var data = await api('dashboard', 'GET');
+    if (!data.success) {
+        if (data.error && data.error.includes('authenticated')) {
+            clearAuth(); window.location.href = 'login.html';
+        }
+        return;
+    }
+
+    // No accounts yet
+    if (!data.accounts || data.accounts.length === 0) {
+        document.getElementById('overviewContent').innerHTML = `
+            <div class="empty-state">
+                <div class="empty-title">NO ACCOUNTS LINKED</div>
+                <div class="empty-desc">Connect your bank account to start hunting.</div>
+                <a href="connect.html" class="empty-btn">Connect Bank Account</a>
+            </div>`;
+        return;
+    }
+
+    var r = data.recoverable;
+    document.getElementById('statTotal').textContent        = fmt(r.total_pending);
+    document.getElementById('statDisputes').textContent     = data.disputes.count;
+    document.getElementById('statDisputesAmt').textContent  = fmt(data.disputes.total_amount) + ' being disputed';
+    document.getElementById('statSubs').textContent         = data.subscriptions.count;
+    document.getElementById('statSubsAmt').textContent      = fmt(data.subscriptions.monthly_cost) + '/month';
+    document.getElementById('statCashback').textContent     = data.cashback.count;
+    document.getElementById('statCashbackAmt').textContent  = fmt(data.cashback.total_amount) + ' pending';
+
+    // Overview content
+    var flagged = data.recent_flags || [];
+    var overviewHtml = '';
+
+    if (flagged.length === 0) {
+        overviewHtml = `<div class="empty-state">
+            <div class="empty-title">NO FLAGS YET</div>
+            <div class="empty-desc">Sync your transactions to start hunting.</div>
+            <button class="empty-btn" onclick="syncNow()">Sync Now</button>
+        </div>`;
+    } else {
+        overviewHtml = '<div class="table-wrap"><div class="table-head"><div class="table-title">Recently Flagged Transactions</div><div class="table-live"><div class="table-live-dot"></div>LIVE</div></div><table><thead><tr><th>Date</th><th>Merchant</th><th>Amount</th><th>Type</th><th>Reason</th></tr></thead><tbody>';
+        flagged.forEach(function(txn) {
+            var badge = txn.flag_type === 'overcharge'    ? 'badge-red'  :
+                        txn.flag_type === 'subscription'  ? 'badge-gold' :
+                        txn.flag_type === 'cashback'      ? 'badge-green': 'badge-blue';
+            overviewHtml += `<tr>
+                <td style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted)">${txn.txn_date || ''}</td>
+                <td style="font-weight:600">${txn.merchant || 'Unknown'}</td>
+                <td style="color:var(--accent)">${fmt(txn.amount)}</td>
+                <td><span class="badge ${badge}">${(txn.flag_type||'').toUpperCase()}</span></td>
+                <td style="font-size:.75rem;color:var(--muted)">${txn.flag_reason || ''}</td>
+            </tr>`;
+        });
+        overviewHtml += '</tbody></table></div>';
+    }
+    document.getElementById('overviewContent').innerHTML = overviewHtml;
+}
+
+// ── Transactions ──
+async function loadTransactions(page, flaggedOnly) {
+    document.getElementById('txnTableWrap').innerHTML = '<div class="spinner"><div class="spin"></div> Loading...</div>';
+    var endpoint = 'transactions?page=' + (page||1) + (flaggedOnly ? '&flag=1' : '');
+    var data = await api(endpoint, 'GET');
+    if (!data.success) { document.getElementById('txnTableWrap').innerHTML = '<div class="empty-state"><div class="empty-title">No transactions yet</div><div class="empty-desc">Sync your account first.</div><button class="empty-btn" onclick="syncNow()">Sync Now</button></div>'; return; }
+    if (!data.transactions || data.transactions.length === 0) {
+        document.getElementById('txnTableWrap').innerHTML = '<div class="empty-state"><div class="empty-title">NO TRANSACTIONS</div><div class="empty-desc">No transactions found.</div></div>';
+        return;
+    }
+    var html = '<table><thead><tr><th>Date</th><th>Merchant</th><th>Narration</th><th>Amount</th><th>Type</th><th>Category</th><th>Flag</th></tr></thead><tbody>';
+    data.transactions.forEach(function(txn) {
+        var flagBadge = txn.flagged ? `<span class="badge badge-red">${(txn.flag_type||'').toUpperCase()}</span>` : '<span style="color:var(--muted);font-size:.7rem">—</span>';
+        html += `<tr>
+            <td style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted)">${txn.txn_date||''}</td>
+            <td style="font-weight:600">${txn.merchant||'Unknown'}</td>
+            <td style="font-size:.75rem;color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${txn.narration||''}</td>
+            <td style="color:${txn.type==='debit'?'var(--accent)':'var(--green)'};font-weight:600">${txn.type==='debit'?'-':'+'} ${fmt(txn.amount)}</td>
+            <td><span class="badge ${txn.type==='debit'?'badge-red':'badge-green'}">${(txn.type||'').toUpperCase()}</span></td>
+            <td style="font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted)">${txn.category||'other'}</td>
+            <td>${flagBadge}</td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('txnTableWrap').innerHTML = html;
+}
+
+// ── Subscriptions ──
+async function loadSubscriptions() {
+    document.getElementById('subsContent').innerHTML = '<div class="spinner"><div class="spin"></div> Loading...</div>';
+    var data = await api('subscriptions', 'GET');
+    if (!data.success || !data.subscriptions || data.subscriptions.length === 0) {
+        document.getElementById('subsContent').innerHTML = '<div class="empty-state"><div class="empty-title">NO SUBSCRIPTIONS FOUND</div><div class="empty-desc">Sync your transactions to detect recurring charges.</div><button class="empty-btn" onclick="syncNow()">Sync Now</button></div>';
+        return;
+    }
+    var html = `<div style="margin-bottom:1rem;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted)">TOTAL MONTHLY COST: <span style="color:var(--accent)">${fmt(data.monthly_cost)}</span> — ANNUAL: <span style="color:var(--accent)">${fmt(data.annual_cost)}</span></div><div class="sub-grid">`;
+    data.subscriptions.forEach(function(sub) {
+        html += `<div class="sub-card">
+            <div class="sub-merchant">${sub.merchant}</div>
+            <div class="sub-amount">${fmt(sub.amount)}</div>
+            <div class="sub-freq">${sub.frequency || 'monthly'}</div>
+            <div class="sub-renewal">Next renewal: ${sub.next_renewal || 'Unknown'}</div>
+            <div style="margin-top:.8rem"><span class="badge ${sub.status==='active'?'badge-green':'badge-red'}">${(sub.status||'').toUpperCase()}</span></div>
+        </div>`;
+    });
+    html += '</div>';
+    document.getElementById('subsContent').innerHTML = html;
+}
+
+// ── Disputes ──
+async function loadDisputes() {
+    document.getElementById('disputesContent').innerHTML = '<div class="spinner"><div class="spin"></div> Loading...</div>';
+    var data = await api('disputes', 'GET');
+    if (!data.success || !data.disputes || data.disputes.length === 0) {
+        document.getElementById('disputesContent').innerHTML = '<div class="empty-state"><div class="empty-title">NO DISPUTES YET</div><div class="empty-desc">Overcharges will appear here once detected.</div></div>';
+        return;
+    }
+    var html = '<table><thead><tr><th>Date Filed</th><th>Merchant</th><th>Amount</th><th>Reason</th><th>Status</th></tr></thead><tbody>';
+    data.disputes.forEach(function(d) {
+        var badge = d.status==='won'?'badge-green':d.status==='filed'?'badge-gold':'badge-blue';
+        html += `<tr>
+            <td style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted)">${(d.filed_at||'').substring(0,10)}</td>
+            <td style="font-weight:600">${d.merchant||'Unknown'}</td>
+            <td style="color:var(--accent);font-weight:600">${fmt(d.amount)}</td>
+            <td style="font-size:.75rem;color:var(--muted);max-width:200px">${(d.reason||'').substring(0,60)}...</td>
+            <td><span class="badge ${badge}">${(d.status||'').toUpperCase()}</span></td>
+        </tr>`;
+    });
+    html += '</tbody></table>';
+    document.getElementById('disputesContent').innerHTML = html;
+}
+
+// ── Swarms ──
+async function loadSwarms() {
+    document.getElementById('swarmsContent').innerHTML = '<div class="spinner"><div class="spin"></div> Loading...</div>';
+    var data = await api('swarms', 'GET');
+    if (!data.success || !data.swarms || data.swarms.length === 0) {
+        document.getElementById('swarmsContent').innerHTML = '<div class="empty-state"><div class="empty-title">NO ACTIVE SWARMS</div><div class="empty-desc">When the same overcharge hits multiple users, PARASITE coordinates a mass dispute. None detected yet.</div></div>';
+        return;
+    }
+    var html = '<div class="swarm-list">';
+    data.swarms.forEach(function(s) {
+        var pct = Math.min(100, (s.affected_users / 100) * 100);
+        html += `<div class="swarm-row">
+            <div class="swarm-row-top">
+                <div class="swarm-row-name">${s.merchant}</div>
+                <div class="swarm-row-users">${s.affected_users} users affected</div>
+            </div>
+            <div class="swarm-bar"><div class="swarm-fill" style="width:${pct}%"></div></div>
+            <div class="swarm-row-meta">
+                <div class="swarm-row-amt">${fmt(s.total_amount)} total</div>
+                <span class="badge ${s.status==='filing'?'badge-red':s.status==='building'?'badge-gold':'badge-green'}">${(s.status||'').toUpperCase()}</span>
+            </div>
+        </div>`;
+    });
+    html += '</div>';
+    document.getElementById('swarmsContent').innerHTML = html;
+}
+
+// ── Accounts ──
+async function loadAccounts() {
+    document.getElementById('accountsContent').innerHTML = '<div class="spinner"><div class="spin"></div> Loading...</div>';
+    var data = await api('dashboard', 'GET');
+    if (!data.success || !data.accounts || data.accounts.length === 0) {
+        document.getElementById('accountsContent').innerHTML = '<div class="empty-state"><div class="empty-title">NO ACCOUNTS</div><div class="empty-desc">Connect your bank to get started.</div><a href="connect.html" class="empty-btn">Connect Bank</a></div>';
+        return;
+    }
+    var html = '<div class="accounts-grid">';
+    data.accounts.forEach(function(acc) {
+        html += `<div class="account-card">
+            <div class="ac-bank">${acc.bank_name||'Bank'}</div>
+            <div class="ac-num">${acc.account_number||'••••'} — ${acc.account_name||''}</div>
+            <div class="ac-bal">${fmt(acc.balance)}</div>
+            <div class="ac-sync">Last synced: ${acc.last_synced ? acc.last_synced.substring(0,16) : 'Never'}</div>
+        </div>`;
+    });
+    html += '</div>';
+    document.getElementById('accountsContent').innerHTML = html;
+}
+
+// ── Sync ──
+async function syncNow() {
+    var btn = document.getElementById('syncBtn');
+    btn.textContent = '⟳ Syncing...';
+    btn.disabled    = true;
+    var result = await api('sync', 'POST', {});
+    if (result.success) {
+        var sr = result.scan_results;
+        alert('Sync complete!\n\nFetched: ' + result.transactions_fetched + ' transactions\nFound: ' + sr.subscriptions_found + ' subscriptions, ' + sr.overcharges_found + ' overcharges, ' + sr.cashback_found + ' cashback');
+        loadDashboard();
+        var activeTab = document.querySelector('.db-nav-item.active');
+        if (activeTab) activeTab.click();
+    } else {
+        alert('Sync failed: ' + (result.error || 'Unknown error'));
+    }
+    btn.textContent = '⟳ Sync Now';
+    btn.disabled    = false;
+}
+
+// ── Tab switching ──
+function switchTab(tab, el) {
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.db-nav-item').forEach(function(n) { n.classList.remove('active'); });
+    document.getElementById('tab-' + tab).classList.add('active');
+    if (el) el.classList.add('active');
+
+    if (tab === 'transactions')   loadTransactions(1, false);
+    if (tab === 'subscriptions')  loadSubscriptions();
+    if (tab === 'disputes')       loadDisputes();
+    if (tab === 'swarms')         loadSwarms();
+    if (tab === 'accounts')       loadAccounts();
+}
+
+// ── Logout ──
+function doLogout() {
+    clearAuth();
+    window.location.href = 'index.html';
+}
+</script>
+</body>
+</html>

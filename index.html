@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARASITE — AI Financial Recovery</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div id="cur"></div>
+<div id="curR"></div>
+<nav>
+  <div class="nav-logo">PARA<span>SITE</span></div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="index.html#how">How It Works</a>
+    <a href="dashboard.html#swarm">Swarm</a>
+    <a href="#revenue">Pricing</a>
+  </div>
+  <button class="nav-cta" onclick="openModal()">Connect Account</button>
+</nav>
+<!-- Ticker -->
+<div class="ticker-wrap" style="margin-top:60px;">
+  <div class="ticker">
+    <span class="ticker-item">RECOVERED TODAY <span class="pos">+$847,291</span></span>
+    <span class="ticker-item">ACTIVE HUNTS <span class="pos">1,204,882</span></span>
+    <span class="ticker-item">SWARM DISPUTES <span class="neg">14 ACTIVE</span></span>
+    <span class="ticker-item">MTN NIGERIA OVERCHARGE <span class="neg">CLUSTER: 48K USERS</span></span>
+    <span class="ticker-item">NETFLIX PRICE DROP <span class="pos">+$3.50 CLAIMED</span></span>
+    <span class="ticker-item">TOTAL RECOVERED ALL-TIME <span class="pos">$124,883,204</span></span>
+    <span class="ticker-item">RECOVERED TODAY <span class="pos">+$847,291</span></span>
+    <span class="ticker-item">ACTIVE HUNTS <span class="pos">1,204,882</span></span>
+    <span class="ticker-item">SWARM DISPUTES <span class="neg">14 ACTIVE</span></span>
+    <span class="ticker-item">MTN NIGERIA OVERCHARGE <span class="neg">CLUSTER: 48K USERS</span></span>
+    <span class="ticker-item">NETFLIX PRICE DROP <span class="pos">+$3.50 CLAIMED</span></span>
+    <span class="ticker-item">TOTAL RECOVERED ALL-TIME <span class="pos">$124,883,204</span></span>
+  </div>
+</div>
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-left">
+    <div class="hero-eyebrow">// AI Financial Recovery Platform v1.0</div>
+    <h1 class="hero-title">
+      THE SYSTEM<br>
+      <span class="line2">EATS BACK</span>
+    </h1>
+    <p class="hero-subtitle">
+      PARASITE is an AI agent that hunts <strong>dead money</strong> across every financial system it can access — 24/7, on your behalf. <strong>Zero upfront cost.</strong> We eat only if you eat.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="window.location.href='login.html'">Start Recovery</button>
+      <button class="btn-ghost" onclick="window.location.href='dashboard.html'">See Dashboard</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num" id="counter1">0</div>
+        <div class="stat-label">Users Protected</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="counter2">$0</div>
+        <div class="stat-label">Total Recovered</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="counter3">0</div>
+        <div class="stat-label">Active Hunts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="dashboard-preview">
+      <div class="dp-topbar">
+        <div class="dp-dot r"></div>
+        <div class="dp-dot y"></div>
+        <div class="dp-dot g"></div>
+        <div class="dp-title">PARASITE — RECOVERY DASHBOARD</div>
+      </div>
+      <div class="dp-body">
+        <div class="dp-greeting">Good morning, REVENANT</div>
+        <div class="dp-amount">$47.82</div>
+        <div class="dp-sub">recovered this month • 12 active hunts running</div>
+        <div class="dp-bar"><div class="dp-bar-fill"></div></div>
+        <div class="dp-cards">
+          <div class="dp-card">
+            <div class="dp-card-label">Cashback</div>
+            <div class="dp-card-val accent">$12.40</div>
+          </div>
+          <div class="dp-card">
+            <div class="dp-card-label">Refunds</div>
+            <div class="dp-card-val gold">$18.50</div>
+          </div>
+          <div class="dp-card">
+            <div class="dp-card-label">Disputes Won</div>
+            <div class="dp-card-val green">$16.92</div>
+          </div>
+          <div class="dp-card">
+            <div class="dp-card-label">Swarm</div>
+            <div class="dp-card-val blue">$0.04</div>
+          </div>
+        </div>
+        <div class="dp-activity-title">Recent Activity</div>
+        <div class="dp-activity-item">
+          <div class="dp-activity-dot" style="background:var(--green)"></div>
+          <div class="dp-activity-text"><strong>Netflix Price Drop</strong>Refund request filed automatically</div>
+          <div class="dp-activity-amt">+$3.50</div>
+        </div>
+        <div class="dp-activity-item">
+          <div class="dp-activity-dot" style="background:var(--accent)"></div>
+          <div class="dp-activity-text"><strong>MTN Overcharge — Swarm</strong>48,291 users · dispute filed</div>
+          <div class="dp-activity-amt">+$0.04</div>
+        </div>
+        <div class="dp-activity-item">
+          <div class="dp-activity-dot" style="background:var(--gold)"></div>
+          <div class="dp-activity-text"><strong>Spotify Trial Cancelled</strong>Before ₦3,200 renewal</div>
+          <div class="dp-activity-amt">+₦3,200</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Features -->
+<section id="features">
+  <div class="section-label">// Core Features</div>
+  <h2 class="section-title reveal">SIX WAYS WE<br>HUNT YOUR MONEY</h2>
+  <p class="section-desc reveal">Every feature runs automatically. No input needed. The AI works while you sleep.</p>
+  <div class="features-grid reveal">
+    <div class="feature-card" style="--c:var(--accent)">
+      <div class="feature-num">01</div>
+      <div class="feature-icon">💳</div>
+      <div class="feature-title">Cashback Claiming</div>
+      <div class="feature-desc">Automatically claims every uncollected cashback and loyalty reward across all linked accounts. The money was always yours — the AI just presses the button you never pressed.</div>
+    </div>
+    <div class="feature-card" style="--c:var(--gold)">
+      <div class="feature-num">02</div>
+      <div class="feature-icon">📉</div>
+      <div class="feature-title">Price Drop Refunds</div>
+      <div class="feature-desc">Monitors prices of everything you've purchased for 90 days. The moment a price drops, a refund request is filed automatically via the merchant's own policy.</div>
+    </div>
+    <div class="feature-card" style="--c:var(--green)">
+      <div class="feature-num">03</div>
+      <div class="feature-icon">🔁</div>
+      <div class="feature-title">Subscription Hunting</div>
+      <div class="feature-desc">Tracks every trial and recurring charge. Cancels automatically before conversion. Catches the fees companies count on your forgetfulness to collect.</div>
+    </div>
+    <div class="feature-card" style="--c:var(--blue)">
+      <div class="feature-num">04</div>
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Chargeback Disputes</div>
+      <div class="feature-desc">Files individual chargeback disputes through your bank's own API when overcharges are detected. Legal, automatic, and zero effort from you.</div>
+    </div>
+    <div class="feature-card" style="--c:var(--purple)">
+      <div class="feature-num">05</div>
+      <div class="feature-icon">🌊</div>
+      <div class="feature-title">Swarm Intelligence</div>
+      <div class="feature-desc">When 1,000+ users share the same overcharge pattern, PARASITE coordinates a mass dispute. One AI. Millions of voices. Companies settle immediately.</div>
+    </div>
+    <div class="feature-card" style="--c:#FF8C42">
+      <div class="feature-num">06</div>
+      <div class="feature-icon">🔀</div>
+      <div class="feature-title">Micro-Arbitrage</div>
+      <div class="feature-desc">Spots price gaps between loyalty ecosystems, gift cards, and cashback platforms. Exploits them in milliseconds. Distributes gains back to the pool.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Full Dashboard Preview -->
+<section id="dashboard">
+  <div class="section-label">// Live Dashboard</div>
+  <h2 class="section-title reveal">YOUR MONEY.<br>FULLY VISIBLE.</h2>
+  <p class="section-desc reveal">Connect your bank account and PARASITE immediately starts hunting overcharges, dead subscriptions, and cashback across every transaction.</p>
+  <div style="text-align:center;margin-top:2rem">
+    <a href="login.html" class="btn-primary" style="text-decoration:none;display:inline-block">Start Recovery Hunt</a>
+  </div>
+</section>
+<!-- Swarm Section -->
+<section id="swarm">
+  <div class="section-label">// Swarm Intelligence</div>
+  <div class="swarm-visual reveal">
+    <div class="swarm-left">
+      <h2 class="section-title">THE SWARM<br>IS RUNNING</h2>
+      <p class="swarm-sub">When the same overcharge hits thousands of users simultaneously, PARASITE coordinates a mass dispute. Companies settle immediately — they can't fight millions of simultaneous claims.</p>
+      <div class="swarm-metrics">
+        <div class="swarm-metric" style="--c:var(--accent)">
+          <div class="swarm-metric-val">64K</div>
+          <div class="swarm-metric-info">
+            <div class="swarm-metric-label">Users in Active Swarms</div>
+            <div class="swarm-metric-desc">Across 14 live dispute clusters</div>
+          </div>
+        </div>
+        <div class="swarm-metric" style="--c:var(--gold)">
+          <div class="swarm-metric-val">$257K</div>
+          <div class="swarm-metric-info">
+            <div class="swarm-metric-label">Total Being Disputed</div>
+            <div class="swarm-metric-desc">In 3 active class action filings</div>
+          </div>
+        </div>
+        <div class="swarm-metric" style="--c:var(--green)">
+          <div class="swarm-metric-val">100%</div>
+          <div class="swarm-metric-info">
+            <div class="swarm-metric-label">Goes Back to Users</div>
+            <div class="swarm-metric-desc">We only take 10% of what we recover</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="swarm-right">
+      <div class="swarm-live-box">
+        <div class="swarm-live-head">
+          <div class="swarm-live-title">Live Swarm Disputes</div>
+          <div class="swarm-count-badge">14 ACTIVE</div>
+        </div>
+        <div class="swarm-disputes">
+          <div class="swarm-dispute">
+            <div class="swarm-dispute-top">
+              <div class="swarm-dispute-name">MTN Nigeria — Overcharge</div>
+              <div class="swarm-dispute-amount">$0.04/user</div>
+            </div>
+            <div class="swarm-dispute-bar"><div class="swarm-dispute-fill" style="width:82%;background:var(--accent)"></div></div>
+            <div class="swarm-dispute-meta">
+              <div class="swarm-dispute-users">48,291 users affected</div>
+              <div class="swarm-dispute-status" style="background:rgba(233,69,96,0.15);color:var(--accent)">FILING</div>
+            </div>
+          </div>
+          <div class="swarm-dispute">
+            <div class="swarm-dispute-top">
+              <div class="swarm-dispute-name">Spotify — Unexplained Fee</div>
+              <div class="swarm-dispute-amount">$0.99/user</div>
+            </div>
+            <div class="swarm-dispute-bar"><div class="swarm-dispute-fill" style="width:55%;background:var(--gold)"></div></div>
+            <div class="swarm-dispute-meta">
+              <div class="swarm-dispute-users">12,844 users affected</div>
+              <div class="swarm-dispute-status" style="background:rgba(245,166,35,0.15);color:var(--gold)">PENDING</div>
+            </div>
+          </div>
+          <div class="swarm-dispute">
+            <div class="swarm-dispute-top">
+              <div class="swarm-dispute-name">DSTV — Billing Error</div>
+              <div class="swarm-dispute-amount">$4.00/user</div>
+            </div>
+            <div class="swarm-dispute-bar"><div class="swarm-dispute-fill" style="width:28%;background:var(--blue)"></div></div>
+            <div class="swarm-dispute-meta">
+              <div class="swarm-dispute-users">3,102 users affected</div>
+              <div class="swarm-dispute-status" style="background:rgba(74,144,217,0.15);color:var(--blue)">BUILDING</div>
+            </div>
+          </div>
+          <div class="swarm-dispute">
+            <div class="swarm-dispute-top">
+              <div class="swarm-dispute-name">Jumia — Price Discrepancy</div>
+              <div class="swarm-dispute-amount">$2.50/user</div>
+            </div>
+            <div class="swarm-dispute-bar"><div class="swarm-dispute-fill" style="width:12%;background:var(--green)"></div></div>
+            <div class="swarm-dispute-meta">
+              <div class="swarm-dispute-users">1,204 users affected</div>
+              <div class="swarm-dispute-status" style="background:rgba(0,200,150,0.15);color:var(--green)">FORMING</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Revenue Model -->
+<section id="revenue">
+  <div class="section-label">// Pricing Model</div>
+  <h2 class="section-title reveal">WE ONLY EAT<br>IF YOU EAT</h2>
+  <p class="section-desc reveal">Zero upfront. Zero subscription. Zero risk. We take a cut only after we recover money for you.</p>
+  <div class="revenue-grid reveal">
+    <div class="revenue-card">
+      <div class="revenue-pct">0%</div>
+      <div class="revenue-title">Upfront Cost</div>
+      <div class="revenue-desc">No subscription. No setup fee. No credit card required to start. Connect your accounts and the AI starts hunting immediately.</div>
+    </div>
+    <div class="revenue-card">
+      <div class="revenue-pct" style="color:var(--gold)">10%</div>
+      <div class="revenue-title">Recovery Commission</div>
+      <div class="revenue-desc">We keep 10% of whatever we recover for you. If we recover $100, you get $90. If we recover $0, you pay $0. Pure performance-based alignment.</div>
+    </div>
+    <div class="revenue-card">
+      <div class="revenue-pct" style="color:var(--green)">100%</div>
+      <div class="revenue-title">Goes Back to You</div>
+      <div class="revenue-desc">Your recovered money goes directly from the company back to your bank account. We never hold, pool, or touch your funds. We only collect our fee separately after.</div>
+    </div>
+  </div>
+</section>
+<!-- Footer -->
+<footer>
+  <div>
+    <div class="footer-logo">PARA<span>SITE</span></div>
+    <div class="footer-tagline">// AI Financial Recovery Platform — v1.0 Prototype</div>
+  </div>
+  <div class="footer-right">
+    <div>Built by REVENANT</div>
+    <div style="margin-top:0.3rem;color:var(--border)">System Requirements Document v1.0</div>
+  </div>
+</footer>
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Connect Account</div>
+    <div class="modal-sub">Link your bank or mobile money to start the recovery hunt. Read-only access. Your passwords are never stored.</div>
+    <div class="modal-field">
+      <label class="modal-label">Full Name</label>
+      <input class="modal-input" type="text" placeholder="REVENANT">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Email Address</label>
+      <input class="modal-input" type="email" placeholder="you@example.com">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Bank / Provider</label>
+      <input class="modal-input" type="text" placeholder="GTBank, Access, Zenith, Kuda...">
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Phone Number</label>
+      <input class="modal-input" type="tel" placeholder="+234 xxx xxx xxxx">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="simulateConnect()" style="flex:1">Start Recovery Hunt</button>
+      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+    <div id="modal-msg" style="margin-top:1rem;font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--green);display:none;">
+      ✓ ACCOUNT CONNECTED — AI HUNT INITIATED
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+
+<script>
+// Cursor
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px';});
+(function anim(){rx+=(mx-rx-16)*.1;ry+=(my-ry-16)*.1;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(anim);})();
+
+// Counters
+setTimeout(()=>{
+  animCount(document.getElementById('counter1'),12847);
+  animCount(document.getElementById('counter2'),0,'$','',2000);
+  document.getElementById('counter2') && animCount(document.getElementById('counter2'),2341847,'$');
+  animCount(document.getElementById('counter3'),4821);
+},500);
+
+// Nav scroll highlight
+const sections=document.querySelectorAll('section[id]');
+const navLinks=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(s=>{if(window.scrollY>=s.offsetTop-200)current=s.id;});
+  navLinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+current?'var(--accent)':'';});
+});
+
+// Connect button in modal — go to register
+document.querySelector('.modal-actions .btn-primary') && 
+  (document.querySelector('.modal-actions .btn-primary').onclick = function(){
+    window.location.href='register.html';
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARASITE — Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; position:relative; }
+.auth-bg { position:absolute;inset:0;background:radial-gradient(ellipse at 60% 40%,rgba(233,69,96,.06) 0%,transparent 60%); pointer-events:none; }
+.auth-card { background:var(--card);border:1px solid var(--border);width:100%;max-width:440px;padding:2.5rem;position:relative;z-index:1; }
+.auth-logo { font-family:'Bebas Neue';font-size:2rem;letter-spacing:.1em;margin-bottom:.25rem; }
+.auth-logo span { color:var(--accent); }
+.auth-sub { font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2rem; }
+.auth-title { font-family:'Bebas Neue';font-size:2.5rem;color:var(--white);margin-bottom:.3rem; }
+.auth-desc { font-size:.85rem;color:var(--muted);margin-bottom:2rem;line-height:1.6; }
+.auth-field { margin-bottom:1.2rem; }
+.auth-label { font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:.4rem; }
+.auth-input { width:100%;background:var(--card2);border:1px solid var(--border);color:var(--white);padding:.75rem 1rem;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s; }
+.auth-input:focus { border-color:var(--accent); }
+.auth-btn { width:100%;background:var(--accent);color:#fff;border:none;padding:.9rem;font-family:'Space Mono',monospace;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);transition:background .2s;margin-top:.5rem; }
+.auth-btn:hover { background:#ff2040; }
+.auth-btn:disabled { background:var(--muted);cursor:not-allowed; }
+.auth-switch { text-align:center;margin-top:1.5rem;font-size:.82rem;color:var(--muted); }
+.auth-switch a { color:var(--accent);text-decoration:none; }
+.auth-msg { margin-top:1rem;font-family:'Space Mono',monospace;font-size:.65rem;padding:.7rem;text-align:center;display:none; }
+.auth-msg.success { background:rgba(0,200,150,.1);border:1px solid var(--green);color:var(--green); }
+.auth-msg.error   { background:rgba(233,69,96,.1);border:1px solid var(--accent);color:var(--accent); }
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="curR"></div>
+
+<nav>
+  <div class="nav-logo">PARA<span>SITE</span></div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+  </div>
+  <a href="register.html" class="nav-cta" style="text-decoration:none">Get Started</a>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-bg"></div>
+  <div class="auth-card">
+    <div class="auth-logo">PARA<span>SITE</span></div>
+    <div class="auth-sub">// AI Financial Recovery</div>
+    <div class="auth-title">WELCOME BACK</div>
+    <div class="auth-desc">Login to see what PARASITE has recovered for you since your last visit.</div>
+
+    <div class="auth-field">
+      <label class="auth-label">Email Address</label>
+      <input class="auth-input" type="email" id="email" placeholder="you@example.com">
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Password</label>
+      <input class="auth-input" type="password" id="password" placeholder="••••••••">
+    </div>
+
+    <button class="auth-btn" id="loginBtn" onclick="doLogin()">Login & Start Hunting</button>
+    <div class="auth-msg" id="authMsg"></div>
+
+    <div class="auth-switch">
+      Don't have an account? <a href="register.html">Create one free</a>
+    </div>
+  </div>
+</div>
+
+<script src="shared.js"></script>
+<script>
+// Cursor
+const cur=document.getElementById('cur'),curR=document.getElementById('curR');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx-5+'px';cur.style.top=my-5+'px';});
+(function anim(){rx+=(mx-rx-16)*.1;ry+=(my-ry-16)*.1;curR.style.left=rx+'px';curR.style.top=ry+'px';requestAnimationFrame(anim);})();
+
+// Redirect if already logged in
+if (isLoggedIn()) window.location.href = 'dashboard.html';
+
+async function doLogin() {
+    var email    = document.getElementById('email').value.trim();
+    var password = document.getElementById('password').value.trim();
+    var btn      = document.getElementById('loginBtn');
+    var msg      = document.getElementById('authMsg');
+
+    if (!email || !password) {
+        showMsg('Please fill in all fields', 'error');
+        return;
+    }
+
+    btn.disabled    = true;
+    btn.textContent = 'Logging in...';
+
+    var result = await api('login', 'POST', { email: email, password: password });
+
+    if (result.success) {
+        setAuth(result.token, { name: result.name, email: result.email, user_id: result.user_id });
+        showMsg('Login successful. Redirecting...', 'success');
+        setTimeout(function() {
+            window.location.href = result.has_accounts ? 'dashboard.html' : 'connect.html';
+        }, 800);
+    } else {
+        showMsg(result.error || 'Login failed', 'error');
+        btn.disabled    = false;
+        btn.textContent = 'Login & Start Hunting';
+    }
+}
+
+function showMsg(text, type) {
+    var msg = document.getElementById('authMsg');
+    msg.textContent = text;
+    msg.className   = 'auth-msg ' + type;
+    msg.style.display = 'block';
+}
+
+// Allow Enter key
+document.getElementById('password').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
